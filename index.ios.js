@@ -52,11 +52,11 @@ class CloudShow extends Component {
     return (
       <TabBarIOS
         unselectedTintColor="#7891AA"
-        tintColor="#1B9AFB"
+        tintColor="#E74D42"
         barTintColor="white">
         <TabBarIOS.Item
           title="文档"
-          icon={{uri: base64Icon, scale: 3}}
+          icon={require('./images/document.png')}
           selected={this.state.selectedTab === 'doc'}
           onPress={() => {
             this.setState({
@@ -72,7 +72,7 @@ class CloudShow extends Component {
         </TabBarIOS.Item>
         <TabBarIOS.Item
           title="图片"
-          icon={{uri: base64Icon, scale: 3}}
+          icon={require('./images/picture.png')}
           selected={this.state.selectedTab === 'pic'}
           onPress={() => {
             this.setState({
@@ -88,7 +88,7 @@ class CloudShow extends Component {
         </TabBarIOS.Item>
         <TabBarIOS.Item
           title="视频"
-          icon={{uri: base64Icon, scale: 3}}
+          icon={require('./images/video.png')}
           selected={this.state.selectedTab === 'video'}
           onPress={() => {
             this.setState({

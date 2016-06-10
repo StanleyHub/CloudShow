@@ -16,7 +16,7 @@ var {
 var RNFS = require('react-native-fs');
 var Carousel = require('react-native-carousel');
 
-var uploadUrl = 'http://buz.co/rnfs/upload-tester.php';  // For testing purposes, go to http://requestb.in/ and create your own link
+var uploadUrl = 'http://buz.co/rnfs/upload-tester.php';
 
 var PlayView = React.createClass({
   getInitialState: function() {
@@ -168,7 +168,7 @@ var styles = StyleSheet.create({
   },
   presentView: {
     marginTop: 64,
-    marginBottom: 50,
+    marginBottom: 49,
     flex: 1,
   },
   currentPage: {
@@ -182,9 +182,10 @@ var styles = StyleSheet.create({
   },
   control: {
     backgroundColor: 'lightgrey',
-    height: 50,
+    height: 55,
     flexDirection: 'row',
     justifyContent:'center',
+    alignItems: 'center'
   },
   nextButton: {
     marginLeft: 30,
