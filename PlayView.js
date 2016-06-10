@@ -16,12 +16,15 @@ var {
 var RNFS = require('react-native-fs');
 var Carousel = require('react-native-carousel');
 
-var uploadUrl = 'http://buz.co/rnfs/upload-tester.php';
+var uploadUrl = 'http://192.168.65.101:8080/api/OpenPPT';
 
 var PlayView = React.createClass({
   getInitialState: function() {
     return {
-      progress: 1,
+      progress: 0,
+      currentPageUri: 'http://192.168.65.101:8080/api/currentpage',
+      notePageUri: 'http://192.168.65.101:8080/api/notepage',
+      nextPageUri: 'http://192.168.65.101:8080/api/nextpage'
     };
   },
 
@@ -36,14 +39,18 @@ var PlayView = React.createClass({
             source={require('./images/start-96.png')}
           />
         </TouchableOpacity>
-        <View style={[styles.progressContainer, styles.center]}>
-          <Text>{'文件上传中'}</Text>
-          <ProgressViewIOS
-            style={styles.progressView}
-            progressTintColor="orange"
-            progress={0.8}>
-          </ProgressViewIOS>
-        </View>
+        {(() => {
+          if(this.state.progress > 0 ) {
+            return (<View style={[styles.progressContainer, styles.center]}>
+                      <Text>{'文件上传中'}</Text>
+                      <ProgressViewIOS
+                        style={styles.progressView}
+                        progressTintColor="orange"
+                        progress={this.state.progress}>
+                      </ProgressViewIOS>
+                    </View>);
+          }
+        })()}
       </View>);
     }
     if(this.state.progress == 1) {
@@ -62,18 +69,18 @@ var PlayView = React.createClass({
             animate={false}
             delay={1000}>
             <View style={{width: 375, flex: 1}}>
-              <Image source={{uri: 'http://img4.cache.netease.com/news/2016/6/10/201606100857298ab4c.jpg'}}
+              <Image source={{uri: this.state.currentPageUri}}
                 style={{flex: 1}}/>
             </View>
             <View style={{flex: 1, width: 375}}>
-              <Image source={{uri: 'http://img4.cache.netease.com/news/2016/6/10/201606100857298ab4c.jpg'}}
+              <Image source={{uri: this.state.notePageUri}}
                 style={{flex: 1}}/>
             </View>
           </Carousel>
         </View>
         <View style={styles.separator} />
         <View style={styles.nextPage}>
-          <Image source={{uri: 'http://img4.cache.netease.com/news/2016/6/10/201606100857298ab4c.jpg'}}
+          <Image source={{uri: this.state.nextPageUri}}
             style={{flex: 1,}}/>
         </View>
         <View style={styles.control}>
@@ -122,7 +129,8 @@ var PlayView = React.createClass({
     };
 
     var uploadProgress = response => {
-      var percentage = Math.floor((response.totalBytesSent/response.totalBytesExpectedToSend) * 100);
+      var progress = response.totalBytesSent/response.totalBytesExpectedToSend;
+      this.setState({progress: progress});
       console.log('UPLOAD IS ' + percentage + '% DONE!');
     };
 

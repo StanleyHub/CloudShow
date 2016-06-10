@@ -86,15 +86,6 @@ var DocumentListView = React.createClass({
   },
 
   renderFooter: function() {
-    if (Platform.OS === 'ios') {
-      return <ActivityIndicatorIOS style={styles.scrollSpinner} />;
-    } else {
-      return (
-        <View  style={{alignItems: 'center'}}>
-          <ProgressBarAndroid styleAttr="Large"/>
-        </View>
-      );
-    }
   },
 
   renderRow: function(
