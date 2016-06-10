@@ -8,6 +8,7 @@
   "dependencies": {
     "react": "^15.1.0",
     "react-native": "^0.27.0",
+    "react-native-carousel": "^0.8.0",
     "react-native-fs": "^1.5.1"
   }
 }

@@ -14,6 +14,7 @@ var {
 
 // require the module
 var RNFS = require('react-native-fs');
+var Carousel = require('react-native-carousel');
 
 var uploadUrl = 'http://buz.co/rnfs/upload-tester.php';  // For testing purposes, go to http://requestb.in/ and create your own link
 
@@ -48,9 +49,29 @@ var PlayView = React.createClass({
     if(this.state.progress == 1) {
       return (<View style={styles.presentView}>
         <View style={styles.currentPage}>
-          <Image source={{uri: 'http://img4.cache.netease.com/news/2016/6/10/201606100857298ab4c.jpg'}}
-            style={{flex: 1,}}/>
+          <Carousel
+            hideIndicators={false}
+            indicatorColor="#E74D42"
+            indicatorSize={20}
+            indicatorSpace={15}
+            inactiveIndicatorColor="#999999"
+            indicatorAtBottom={true}
+            indicatorOffset={5}
+            inactiveIndicatorText= '•'
+            indicatorText= '•'
+            animate={false}
+            delay={1000}>
+            <View style={{width: 375, flex: 1}}>
+              <Image source={{uri: 'http://img4.cache.netease.com/news/2016/6/10/201606100857298ab4c.jpg'}}
+                style={{flex: 1}}/>
+            </View>
+            <View style={{flex: 1, width: 375}}>
+              <Image source={{uri: 'http://img4.cache.netease.com/news/2016/6/10/201606100857298ab4c.jpg'}}
+                style={{flex: 1}}/>
+            </View>
+          </Carousel>
         </View>
+        <View style={styles.separator} />
         <View style={styles.nextPage}>
           <Image source={{uri: 'http://img4.cache.netease.com/news/2016/6/10/201606100857298ab4c.jpg'}}
             style={{flex: 1,}}/>
@@ -152,7 +173,6 @@ var styles = StyleSheet.create({
   },
   currentPage: {
     flex: 1,
-    alignItems: 'stretch',
     padding: 10,
   },
   nextPage: {
@@ -168,6 +188,10 @@ var styles = StyleSheet.create({
   },
   nextButton: {
     marginLeft: 30,
+  },
+  separator: {
+    height: 1,
+    backgroundColor: '#eeeeee',
   },
 });
 
