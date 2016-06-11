@@ -10,6 +10,7 @@ var {
   View,
   TouchableOpacity,
   ProgressViewIOS,
+  ActivityIndicatorIOS
 } = ReactNative;
 
 // require the module
@@ -21,10 +22,13 @@ var uploadUrl = 'http://192.168.1.99:8080/api/OpenPPT';
 var PlayView = React.createClass({
   getInitialState: function() {
     return {
-      progress: 1,
+      progress: 0,
       currentPageUri: '',
       notePageUri: '',
-      nextPageUri: ''
+      nextPageUri: '',
+      loading: false,
+      hasPrePage: false,
+      hasNextPage: false,
     };
   },
 
@@ -35,7 +39,6 @@ var PlayView = React.createClass({
           onPress={this.play}
           activeOpacity={0.6}>
           <Image
-            style={styles.button}
             source={require('./images/start-96.png')}
           />
         </TouchableOpacity>
@@ -54,6 +57,10 @@ var PlayView = React.createClass({
       </View>);
     }
     if(this.state.progress == 1) {
+      var loader = this.state.loading ?
+        <View style={styles.progress}>
+          <ActivityIndicatorIOS size='large' color='#E74C3C'/>
+        </View> : null;
       return (<View style={styles.presentView}>
         <View style={styles.currentPage}>
           <Carousel
@@ -70,27 +77,40 @@ var PlayView = React.createClass({
             delay={1000}>
             <View>
               <Image source={{uri: this.state.currentPageUri}}
-                  style={{flex: 1, width: 355}}
-                  resizeMode='contain'/>
+                  style={{flex: 1, width: 300}}
+                  resizeMode='contain'
+                  onLoadStart={(e) => this.setState({loading: true})}
+                  onLoad={() => this.setState({loading: false})}>
+                {loader}
+              </Image>
             </View>
-            <View style={{backgroundColor: 'black'}}>
+            <View>
               <Image source={{uri: this.state.notePageUri}}
-                  style={{flex: 1, width: 355}}
-                  resizeMode='contain'/>
+                  style={{flex: 1, width: 300}}
+                  resizeMode='contain'
+                  onLoadStart={(e) => this.setState({loading: true})}
+                  onLoad={() => this.setState({loading: false})}>
+                {loader}
+              </Image>
             </View>
           </Carousel>
         </View>
         <View style={styles.separator} />
         <View style={styles.nextPage}>
           <Image source={{uri: this.state.nextPageUri}}
-              style={{flex: 1, width: 340}}
-              resizeMode='contain'/>
+              style={{flex: 1, width: 280}}
+              resizeMode='contain'
+              onLoadStart={(e) => this.setState({loading: true})}
+              onLoad={() => this.setState({loading: false})}>
+            {loader}
+          </Image>
         </View>
         <View style={styles.control}>
           <TouchableOpacity
             style={styles.preButton}
             activeOpacity={0.6}
-            onPress={this.prePage}>
+            onPress={this.prePage}
+            disabled={this.state.hasPrePage}>
             <Image
               style={styles.button}
               source={require('./images/pre-50.png')}
@@ -99,7 +119,8 @@ var PlayView = React.createClass({
           <TouchableOpacity
             style={styles.nextButton}
             activeOpacity={0.6}
-            onPress={this.nextPage}>
+            onPress={this.nextPage}
+            disabled={this.state.hasNextPage}>
             <Image
               style={styles.button}
               source={require('./images/next-50.png')}
@@ -108,6 +129,13 @@ var PlayView = React.createClass({
         </View>
       </View>);
     }
+  },
+
+  componentWillUnmount: function() {
+    fetch('http://192.168.1.99:8080/api/close', {method: 'POST'})
+      .then((response) => {
+        console.log(response);
+      });
   },
 
   render: function() {
@@ -120,10 +148,11 @@ var PlayView = React.createClass({
 
   prePage: function() {
     console.log('pre page');
+    this.setState({loading: true});
     fetch('http://192.168.1.99:8080/api/pageup', {method: 'POST'})
-      .then((response) => {
+      .then((response) => response.json())
+      .then(() => {
         console.log('page up done.');
-        console.log(response.text());
         var cacheBuster = this.getCacheBuster();
         this.setState({
           currentPageUri: 'http://192.168.1.99:8080/api/currentpage' + cacheBuster,
@@ -139,10 +168,11 @@ var PlayView = React.createClass({
 
   nextPage: function() {
     console.log('next page');
+    this.setState({loading: true});
     fetch('http://192.168.1.99:8080/api/pagedown', {method: 'POST'})
-      .then((response) => {
+      .then((response) => response.json())
+      .then((responseJson) => {
         console.log('page down done.');
-        console.log(response.text());
         var cacheBuster = this.getCacheBuster();
         this.setState({
           currentPageUri: 'http://192.168.1.99:8080/api/currentpage' + cacheBuster,
@@ -155,7 +185,7 @@ var PlayView = React.createClass({
   play: function() {
     var files = [
       {
-        name: 'test.pptx',
+        name: this.props.doc.name,
         filename: this.props.doc.name,
         filepath: this.props.doc.path,
         filetype: 'application/vnd.ms-powerpoint'
@@ -204,7 +234,6 @@ var styles = StyleSheet.create({
   },
   uploadView: {
     flex: 1,
-    // backgroundColor: 'grey',
     alignItems: 'center',
     justifyContent:'center',
   },
@@ -234,7 +263,7 @@ var styles = StyleSheet.create({
   },
   control: {
     backgroundColor: 'lightgrey',
-    height: 55,
+    height: 40,
     flexDirection: 'row',
     justifyContent:'center',
     alignItems: 'center'
@@ -246,6 +275,15 @@ var styles = StyleSheet.create({
     height: 1,
     backgroundColor: '#eeeeee',
   },
+  progress: {
+    flex: 1,
+    justifyContent:'center',
+    alignSelf: 'stretch',
+  },
+  button: {
+    width: 36,
+    height: 36,
+  }
 });
 
 module.exports = PlayView;

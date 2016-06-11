@@ -56,4 +56,74 @@
   return YES;
 }
 
+
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
+{
+  
+  // Copy the file into the documents directory, renaming if there's a duplicate
+  [self copyItemAtURLtoDocumentsDirectory:url];
+  
+  return YES;
+}
+
+-(BOOL)copyItemAtURLtoDocumentsDirectory:(NSURL*)url {
+  
+  NSError *error;
+  NSURL *copyToURL =  [self applicationDocumentsDirectory];
+  
+  NSString *fileName = [url lastPathComponent];
+  
+  // Add requested file name to path
+  copyToURL = [copyToURL URLByAppendingPathComponent:fileName isDirectory:NO];
+  
+  if ([[NSFileManager defaultManager] fileExistsAtPath:copyToURL.path]) {
+    
+    // Duplicate path
+    NSURL *duplicateURL = copyToURL;
+    // Remove the filename extension
+    copyToURL = [copyToURL URLByDeletingPathExtension];
+    // Filename no extension
+    NSString *fileNameWithoutExtension = [copyToURL lastPathComponent];
+    // File extension
+    NSString *fileExtension = [url pathExtension];
+    
+    int i=1;
+    while ([[NSFileManager defaultManager] fileExistsAtPath:duplicateURL.path]) {
+      
+      // Delete the last path component
+      copyToURL = [copyToURL URLByDeletingLastPathComponent];
+      // Update URL with new name
+      copyToURL=[copyToURL URLByAppendingPathComponent:[NSString stringWithFormat:@"%@–%i",fileNameWithoutExtension,i]];
+      // Add back the file extension
+      copyToURL =[copyToURL URLByAppendingPathExtension:fileExtension];
+      // Copy path to duplicate
+      duplicateURL = copyToURL;
+      i++;
+      
+    }
+    
+    
+  }
+  
+  BOOL ok = [[NSFileManager defaultManager] moveItemAtURL:url toURL:copyToURL error:&error];
+  
+  // Feed back any errors
+  if (error) {
+    NSLog(@"%@",[error localizedDescription]);
+  }
+  
+  return ok;
+}
+
+-(NSURL *)applicationDocumentsDirectory {
+  
+  NSString *documentsDirectory;
+  NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+  if ([paths count] > 0) {
+    documentsDirectory = [paths objectAtIndex:0];
+  }
+  // Important that we use fileURLWithPath and not URLWithString (see NSURL class reference, Apple Developer Site)
+  return [NSURL fileURLWithPath:documentsDirectory];
+}
+
 @end

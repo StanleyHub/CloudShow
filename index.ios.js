@@ -31,6 +31,7 @@ class CloudShow extends Component {
   }
 
   componentDidMount() {
+    console.log(RNFS.DocumentDirectoryPath);
     // RNFS.writeFile(RNFS.DocumentDirectoryPath + '/test.pptx', 'Lorem ipsum dolor sit amet', 'utf8')
     //   .then((success) => {
     //     console.log('FILE WRITTEN!');

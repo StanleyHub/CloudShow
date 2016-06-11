@@ -94,15 +94,14 @@ var DocumentListView = React.createClass({
     rowID: number | string,
     highlightRowFunc: (sectionID: ?number | string, rowID: ?number | string) => void,
   ) {
-    return (
-      <DocumentListItem
+    return doc.isFile() ?
+      (<DocumentListItem
         key={doc.name}
         onSelect={() => this.selectDoc(doc)}
         onHighlight={() => highlightRowFunc(sectionID, rowID)}
         onUnhighlight={() => highlightRowFunc(null, null)}
         doc={doc}
-      />
-    );
+      />) : null;
   },
 
   selectDoc: function(doc: Object) {
