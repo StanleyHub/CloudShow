@@ -31,13 +31,13 @@ class CloudShow extends Component {
   }
 
   componentDidMount() {
-    RNFS.writeFile(RNFS.DocumentDirectoryPath + '/test.pptx', 'Lorem ipsum dolor sit amet', 'utf8')
-      .then((success) => {
-        console.log('FILE WRITTEN!');
-      })
-      .catch((err) => {
-        console.log(err.message);
-      });
+    // RNFS.writeFile(RNFS.DocumentDirectoryPath + '/test.pptx', 'Lorem ipsum dolor sit amet', 'utf8')
+    //   .then((success) => {
+    //     console.log('FILE WRITTEN!');
+    //   })
+    //   .catch((err) => {
+    //     console.log(err.message);
+    //   });
   }
 
   renderContent(pageText: string) {
@@ -64,6 +64,9 @@ class CloudShow extends Component {
             });
           }}>
           <NavigatorIOS
+            barTintColor='#e74c3c'
+            titleTextColor='#ffffff'
+            tintColor='#ffffff'
             style={styles.container}
             initialRoute={{
               title: '文档',
@@ -80,6 +83,9 @@ class CloudShow extends Component {
             });
           }}>
           <NavigatorIOS
+            barTintColor='#e74c3c'
+            titleTextColor='#ffffff'
+            tintColor='#ffffff'
             style={styles.container}
             initialRoute={{
               title: '图片',
@@ -96,6 +102,9 @@ class CloudShow extends Component {
             });
           }}>
           <NavigatorIOS
+            barTintColor='#e74c3c'
+            titleTextColor='#ffffff'
+            tintColor='#ffffff'
             style={styles.container}
             initialRoute={{
               title: '视频',
