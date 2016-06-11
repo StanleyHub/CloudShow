@@ -16,15 +16,15 @@ var {
 var RNFS = require('react-native-fs');
 var Carousel = require('react-native-carousel');
 
-var uploadUrl = 'http://192.168.65.101:8080/api/OpenPPT';
+var uploadUrl = 'http://192.168.1.99:8080/api/OpenPPT';
 
 var PlayView = React.createClass({
   getInitialState: function() {
     return {
-      progress: 0,
-      currentPageUri: 'http://192.168.65.101:8080/api/currentpage',
-      notePageUri: 'http://192.168.65.101:8080/api/notepage',
-      nextPageUri: 'http://192.168.65.101:8080/api/nextpage'
+      progress: 1,
+      currentPageUri: '',
+      notePageUri: '',
+      nextPageUri: ''
     };
   },
 
@@ -45,7 +45,7 @@ var PlayView = React.createClass({
                       <Text>{'文件上传中'}</Text>
                       <ProgressViewIOS
                         style={styles.progressView}
-                        progressTintColor="orange"
+                        progressTintColor="#E74C3C"
                         progress={this.state.progress}>
                       </ProgressViewIOS>
                     </View>);
@@ -68,25 +68,29 @@ var PlayView = React.createClass({
             indicatorText= '•'
             animate={false}
             delay={1000}>
-            <View style={{width: 375, flex: 1}}>
+            <View>
               <Image source={{uri: this.state.currentPageUri}}
-                style={{flex: 1}}/>
+                  style={{flex: 1, width: 355}}
+                  resizeMode='contain'/>
             </View>
-            <View style={{flex: 1, width: 375}}>
+            <View style={{backgroundColor: 'black'}}>
               <Image source={{uri: this.state.notePageUri}}
-                style={{flex: 1}}/>
+                  style={{flex: 1, width: 355}}
+                  resizeMode='contain'/>
             </View>
           </Carousel>
         </View>
         <View style={styles.separator} />
         <View style={styles.nextPage}>
           <Image source={{uri: this.state.nextPageUri}}
-            style={{flex: 1,}}/>
+              style={{flex: 1, width: 340}}
+              resizeMode='contain'/>
         </View>
         <View style={styles.control}>
           <TouchableOpacity
             style={styles.preButton}
-            activeOpacity={0.6}>
+            activeOpacity={0.6}
+            onPress={this.prePage}>
             <Image
               style={styles.button}
               source={require('./images/pre-50.png')}
@@ -94,7 +98,8 @@ var PlayView = React.createClass({
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.nextButton}
-            activeOpacity={0.6}>
+            activeOpacity={0.6}
+            onPress={this.nextPage}>
             <Image
               style={styles.button}
               source={require('./images/next-50.png')}
@@ -111,6 +116,40 @@ var PlayView = React.createClass({
         {this.renderSubview()}
       </View>
     );
+  },
+
+  prePage: function() {
+    console.log('pre page');
+    fetch('http://192.168.1.99:8080/api/pageup', {method: 'POST'})
+      .then((response) => {
+        console.log('page up done.');
+        console.log(response.text());
+        var cacheBuster = this.getCacheBuster();
+        this.setState({
+          currentPageUri: 'http://192.168.1.99:8080/api/currentpage' + cacheBuster,
+          notePageUri: 'http://192.168.1.99:8080/api/notepage' + cacheBuster,
+          nextPageUri: 'http://192.168.1.99:8080/api/nextpage' + cacheBuster
+        });
+      });
+  },
+
+  getCacheBuster: function() {
+    return '?random=' + Math.random();
+  },
+
+  nextPage: function() {
+    console.log('next page');
+    fetch('http://192.168.1.99:8080/api/pagedown', {method: 'POST'})
+      .then((response) => {
+        console.log('page down done.');
+        console.log(response.text());
+        var cacheBuster = this.getCacheBuster();
+        this.setState({
+          currentPageUri: 'http://192.168.1.99:8080/api/currentpage' + cacheBuster,
+          notePageUri: 'http://192.168.1.99:8080/api/notepage' + cacheBuster,
+          nextPageUri: 'http://192.168.1.99:8080/api/nextpage' + cacheBuster
+        });
+      });
   },
 
   play: function() {
@@ -131,7 +170,7 @@ var PlayView = React.createClass({
     var uploadProgress = response => {
       var progress = response.totalBytesSent/response.totalBytesExpectedToSend;
       this.setState({progress: progress});
-      console.log('UPLOAD IS ' + percentage + '% DONE!');
+      console.log('UPLOAD IS ' + progress + 'DONE!');
     };
 
     // create an object of options
@@ -146,6 +185,12 @@ var PlayView = React.createClass({
     RNFS.uploadFiles(options)
       .then(response => {
         this.setState({progress: 1});
+        var cacheBuster = this.getCacheBuster();
+        this.setState({
+          currentPageUri: 'http://192.168.1.99:8080/api/currentpage' + cacheBuster,
+          notePageUri: 'http://192.168.1.99:8080/api/notepage' + cacheBuster,
+          nextPageUri: 'http://192.168.1.99:8080/api/nextpage' + cacheBuster
+        });
       })
       .catch(err => {
         console.log(err);
@@ -185,8 +230,7 @@ var styles = StyleSheet.create({
   },
   nextPage: {
     flex: 1,
-    alignItems: 'stretch',
-    padding: 20,
+    alignItems: 'center',
   },
   control: {
     backgroundColor: 'lightgrey',
