@@ -106,12 +106,13 @@ var DocumentListView = React.createClass({
 
   selectDoc: function(doc: Object) {
     if (Platform.OS === 'ios') {
+      this.props.hideTabbar();
       this.props.navigator.push({
         title: doc.name,
         leftButtonTitle: '关闭',
         onLeftButtonPress: () => this.props.navigator.pop(),
         component: PlayView,
-        passProps: {doc},
+        passProps: {doc: doc, showTabbar: this.props.showTabbar},
       });
     } else {
       dismissKeyboard();

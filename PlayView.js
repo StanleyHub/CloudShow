@@ -136,6 +136,7 @@ var PlayView = React.createClass({
       .then((response) => {
         console.log(response);
       });
+    this.props.showTabbar();
   },
 
   render: function() {
@@ -183,6 +184,7 @@ var PlayView = React.createClass({
   },
 
   play: function() {
+    // this.setState({progress: 1});
     var files = [
       {
         name: this.props.doc.name,
@@ -250,7 +252,6 @@ var styles = StyleSheet.create({
   },
   presentView: {
     marginTop: 64,
-    marginBottom: 49,
     flex: 1,
   },
   currentPage: {
