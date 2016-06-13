@@ -42,7 +42,9 @@ var TabBarView = React.createClass({
         barTintColor="white">
         <TabNavigator.Item
           title="文档"
-          renderIcon={() => <Image source={require('./images/document.png')} />}
+          selectedTitleStyle={{color: '#e74c3c'}}
+          renderIcon={() => <Image source={require('./images/document-unselected.png')} />}
+          renderSelectedIcon={() => <Image source={require('./images/document.png')} />}
           selected={this.state.selectedTab === 'doc'}
           onPress={() => {
             this.setState({
@@ -62,7 +64,9 @@ var TabBarView = React.createClass({
         </TabNavigator.Item>
         <TabNavigator.Item
           title="图片"
-          renderIcon={() => <Image source={require('./images/picture.png')} />}
+          selectedTitleStyle={{color: '#e74c3c'}}
+          renderIcon={() => <Image source={require('./images/picture-unselected.png')} />}
+          renderSelectedIcon={() => <Image source={require('./images/picture.png')} />}
           selected={this.state.selectedTab === 'pic'}
           onPress={() => {
             this.setState({
@@ -77,6 +81,27 @@ var TabBarView = React.createClass({
             initialRoute={{
               title: '图片',
               component: PictureListView,
+            }}/>
+        </TabNavigator.Item>
+        <TabNavigator.Item
+          title="视频"
+          selectedTitleStyle={{color: '#e74c3c'}}
+          renderIcon={() => <Image source={require('./images/video-unselected.png')} />}
+          renderSelectedIcon={() => <Image source={require('./images/video.png')} />}
+          selected={this.state.selectedTab === 'video'}
+          onPress={() => {
+            this.setState({
+              selectedTab: 'video',
+            });
+          }}>
+          <NavigatorIOS
+            barTintColor='#e74c3c'
+            titleTextColor='#ffffff'
+            tintColor='#ffffff'
+            style={styles.container}
+            initialRoute={{
+              title: '视频',
+              component: VideoListView,
             }}/>
         </TabNavigator.Item>
       </TabNavigator>

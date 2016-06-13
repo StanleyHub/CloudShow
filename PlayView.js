@@ -212,7 +212,7 @@ var PlayView = React.createClass({
       beginCallback: uploadBegin,
       progressCallback: uploadProgress
     };
-
+  
     // upload files
     RNFS.uploadFiles(options)
       .then(response => {
