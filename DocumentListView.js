@@ -108,6 +108,8 @@ var DocumentListView = React.createClass({
     if (Platform.OS === 'ios') {
       this.props.navigator.push({
         title: doc.name,
+        leftButtonTitle: '关闭',
+        onLeftButtonPress: () => this.props.navigator.pop(),
         component: PlayView,
         passProps: {doc},
       });
