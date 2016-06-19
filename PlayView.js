@@ -212,7 +212,7 @@ var PlayView = React.createClass({
       beginCallback: uploadBegin,
       progressCallback: uploadProgress
     };
-  
+
     // upload files
     RNFS.uploadFiles(options)
       .then(response => {
@@ -264,13 +264,16 @@ var styles = StyleSheet.create({
   },
   control: {
     backgroundColor: 'lightgrey',
-    height: 40,
+    height: 60,
     flexDirection: 'row',
-    justifyContent:'center',
-    alignItems: 'center'
+  },
+  preButton: {
+    marginLeft: 20,
+    marginTop:3,
   },
   nextButton: {
-    marginLeft: 30,
+    marginLeft: 170,
+    marginTop:3,
   },
   separator: {
     height: 1,
@@ -282,8 +285,8 @@ var styles = StyleSheet.create({
     alignSelf: 'stretch',
   },
   button: {
-    width: 36,
-    height: 36,
+    width: 55,
+    height: 55,
   }
 });
 
